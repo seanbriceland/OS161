@@ -4,6 +4,9 @@ OS161
 Operating Systems Concepts
 
 Problems and Implementations:
+
+
+**SYSTEM CALLS**
 Implement system calls and exception handling. The full range of system calls that we think you might want over the course of the semester is listed in kern/include/kern/syscall.h. For this assignment you should implement:
 
 File system support: open, read, write, lseek, close, dup2, chdir, and __getcwd.
