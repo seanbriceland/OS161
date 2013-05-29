@@ -1,0 +1,38 @@
+**WHALE MATING PROBLEM**
+You have been hired by the New England Aquarium's research division to help find a way to increase the whale population.
+Because there are not enough of them, the whales are having synchronization problems in finding a mate. 
+The trick is that in order to have children, three whales are needed; one male, one female, 
+and one to play matchmaker—literally, to push the other two whales together.
+
+Your job is to write the three procedures male(), female(), and matchmaker(). 
+Each whale is represented by a separate thread. A male whale calls male(), which waits until there is a waiting female and matchmaker; 
+similarly, a female whale must wait until a male whale and matchmaker are present. 
+Once all three are present, the magic happens and then all three return.
+
+Each whale thread should call the appropriate _start() function when it begins mating or matchmaking
+and the appropriate _end() function when mating or matchmaking completes. 
+These functions are part of the problem driver in drivers.c and you are welcome to change them, but we will use our own versions for testing.
+
+The test driver in drivers.c forks thirty threads, and has ten of them invoke male(), ten of them invoke female(), and ten of them invoke matchmaker(). 
+Stub routines, which do nothing but call the appropriate _start() and _end() functions, are provided for these three functions.
+Your job will be to re-implement these functions so that they solve the synchronization problem described above.
+
+When you are finished, you should be able to examine the output from running sp1 and convince yourself that your solution satisfies the constraints outlined above.
+
+
+**STOPLIGHT INTERSECTION PROBLEM**
+
+If you drive in Buffalo you know two things very well:
+
+Four-way stops are very common.
+Knowledge of how to correctly proceed through a four-way stop is very uncommon.
+In general, four-way stops are so tricky that they've even been known to flummox the otherwise unflummoxable Google self-driving car, which both knows and is programmed to follow the rules.
+
+Given that robot cars are the future anyway, we can rethink the entire idea of a four-way stop. Let's model the intersection as shown below. We consider the intersection as composed of four quadrants, numbered 0–3. Cars approach the intersection from one of four directions, also numbered 0–3. Note that we have numbered the quadrants so that a car approaching from direction X enters the intersection in quadrant X.
+
+Given our model of the intersection, your job is to use synchronization primitives to implement a solution meeting the following two requirements:
+
+No two cars may be in the same quadrant of the intersection at the same time. This constitutes a crash.
+Once a car enters any intersection quadrant it must always be in some quadrant until it calls leaveIntersection().
+Cars do not move diagonally between intersection quadrants.
+Your solution should improve traffic flow compared to a conventional four-way stop while not starving traffic from any direction.
