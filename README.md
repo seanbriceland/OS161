@@ -3,10 +3,84 @@ OS161
 
 Operating Systems Concepts
 
-Problems and Implementations:
+**Problems and Implementations:**
 
+**SYNCH IMPLEMENTATIONS**
+
+It's finally time to write some OS/161 code. The moment you've been waiting for!
+
+It is possible to implement the primitives below on top of other primitives. It is, however, not always a great idea. You should definitely read and understanding the existing semaphore implementation since that can be used as a model for several of the other primitives we ask you to implement below.
+
+Implement Locks
+
+Implement locks for OS/161. The interface for the lock structure is defined in kern/include/synch.h. Stub code is provided in kern/threads/synch.c.
+
+When you are done you should repeatedly pass the sy2 lock test provided by OS/161.
+
+Note that you will not be able to run any of these tests an unlimited number of times. Due to limitations in the current virtual memory system used by your kernel, appropriately called dumbvm, your kernel is leaking a lot of memory. However, your synchronization primitives themselves should not leak memory, and you can inspect the kernel heap stats to ensure that they do not. (We will.)
+
+you may wonder why, if the kernel is leaking memory, the kernel heap stats don't change between runs of sy1, for example, indicating that the semaphore implementation allocates and frees memory properly. The reason is that the kernel malloc() implementation we have provided is not broken, and it will correctly allocate, free and reallocate small items inside of the memory made available to it by the kernel. What does leak are larger allocations like, for example, the 4K thread kernel stacks, and it is these large items that eventually cause the kernel to run out of memory and panic(). Look at kern/arch/mips/vm/dumbvm.c for more details about what's broken and why.
+Implement Condition Variables
+
+Implement condition variables with Mesa—or non-blocking—semantics for OS/161. The interface for the condition variable structure is also defined in synch.h and stub code is provided in synch.c.
+
+We have not discussed the differences between condition variable semantics. Two different varieties exist: Hoare, or blocking, and Mesa, or non-blocking. The difference is in how cv_signal is handled:
+
+In Hoare semantics, the thread that calls cv_signal will block until the signaled thread (if any) runs and releases the lock.
+In Mesa semantics the thread that calls cv_signal will awaken one thread waiting on the condition variable but will not block.
+Please implement Mesa semantics. When you are done you should repeatedly pass the sy3 condition variable test provided by OS/161.
+
+Implement Reader-Writer Locks
+
+Implement reader-writer locks for OS/161. A reader-writer lock is a lock that threads can acquire in one of two ways: read mode or write mode. Read mode does not conflict with read mode, but read mode conflicts with write mode and write mode conflicts with write mode. The result is that many threads can acquire the lock in read mode, or one thread can acquire the lock in write mode. Your solution must also ensure that no thread waits to acquire the lock indefinitely, called starvation.
+
+Unlike regular locks and condition variables, we have not provided you with an interface, stub code, or iron-clad semantics for reader-writer locks. You must develop your own. Your implementation must solve many readers, one writer problem and ensure that no writers are starved even in the presence of many readers. Build something you will be comfortable using later.
+
+Implement your interface in synch.h and your code in synch.c. Please use the following self-explanatory templates for your code to ensure that we can run it from our test driver.
+
+struct rwlock * rwlock_create(const char *);
+void rwlock_destroy(struct rwlock *);
+
+void rwlock_acquire_read(struct rwlock *);
+void rwlock_release_read(struct rwlock *);
+void rwlock_acquire_write(struct rwlock *);
+void rwlock_release_write(struct rwlock *);
+Unlike locks and condition variables, where we have provided you with a test suite, we are leaving it to you to develop a test that exercises your reader-writer locks. You will want to edit kern/startup/menu.c to allow yourself to run the command from the kernel menu or command line. We have our own reader-writer test that we will use to test and grade your implementation.
+
+**SYNCH PROBLEMS**
+
+The Classic CS161 Whale Mating Problem
+
+eventually there will be "classic" CSE421 synchronization problems, but for this year we're giving credit where credit is due.
+You have been hired by the New England Aquarium's research division to help find a way to increase the whale population. Because there are not enough of them, the whales are having synchronization problems in finding a mate. The trick is that in order to have children, three whales are needed; one male, one female, and one to play matchmaker—literally, to push the other two whales together.
+
+Your job is to write the three procedures male(), female(), and matchmaker(). Each whale is represented by a separate thread. A male whale calls male(), which waits until there is a waiting female and matchmaker; similarly, a female whale must wait until a male whale and matchmaker are present. Once all three are present, the magic happens and then all three return.
+
+Each whale thread should call the appropriate _start() function when it begins mating or matchmaking and the appropriate _end() function when mating or matchmaking completes. These functions are part of the problem driver in drivers.c and you are welcome to change them, but we will use our own versions for testing.
+
+The test driver in drivers.c forks thirty threads, and has ten of them invoke male(), ten of them invoke female(), and ten of them invoke matchmaker(). Stub routines, which do nothing but call the appropriate _start() and _end() functions, are provided for these three functions. Your job will be to re-implement these functions so that they solve the synchronization problem described above.
+
+When you are finished, you should be able to examine the output from running sp1 and convince yourself that your solution satisfies the constraints outlined above.
+
+The Buffalo Intersection Problem
+
+If you drive in Buffalo you know two things very well:
+
+Four-way stops are very common.
+Knowledge of how to correctly proceed through a four-way stop is very uncommon.
+In general, four-way stops are so tricky that they've even been known to flummox the otherwise unflummoxable Google self-driving car, which both knows and is programmed to follow the rules.
+
+Given that robot cars are the future anyway, we can rethink the entire idea of a four-way stop. Let's model the intersection as shown below. We consider the intersection as composed of four quadrants, numbered 0–3. Cars approach the intersection from one of four directions, also numbered 0–3. Note that we have numbered the quadrants so that a car approaching from direction X enters the intersection in quadrant X.
+
+Given our model of the intersection, your job is to use synchronization primitives to implement a solution meeting the following two requirements:
+
+No two cars may be in the same quadrant of the intersection at the same time. This constitutes a crash.
+Once a car enters any intersection quadrant it must always be in some quadrant until it calls leaveIntersection().
+Cars do not move diagonally between intersection quadrants.
+Your solution should improve traffic flow compared to a conventional four-way stop while not starving traffic from any direction.
 
 **SYSTEM CALLS**
+
 Implement system calls and exception handling. The full range of system calls that we think you might want over the course of the semester is listed in kern/include/kern/syscall.h. For this assignment you should implement:
 
 File system support: open, read, write, lseek, close, dup2, chdir, and __getcwd.
