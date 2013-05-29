@@ -53,7 +53,7 @@ inline void matchmaker_end(void) {
 }
 
 /*
- * 08 Feb 2012 : GWA : The following function drives the entire whalemating
+ * The following function drives the entire whalemating
  * process. Feel free to modify at will, but make no assumptions about the
  * order or timing of threads launched by our testing suite.
  */
@@ -115,12 +115,7 @@ int whalemating(int nargs, char **args) {
 	return 0;
 }
 
-/*
- * 08 Feb 2012 : GWA : Driver code for the stoplight problem.
- */
-
-/*
- * 08 Feb 2012 : GWA : The following functions should be called by your
+ /* The following functions should be called by your
  * stoplight solution when a car is in an intersection quadrant. The
  * semantics of the problem are that once a car enters any quadrant it has to
  * be somewhere in the intersection until it call leaveIntersection(), which
