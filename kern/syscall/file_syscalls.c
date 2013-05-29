@@ -2,6 +2,14 @@
  * file_syscalls.c
  * SPB & FAR
  * Implementation for all pertinent file syscalls
+ * 	1) sys_open
+ * 	2) sys_close
+ * 	3) sys_read
+ * 	4) sys_write
+ * 	5) sys_lseek
+ * 	6) sys_dup2
+ * 	7) sys_chdir
+ * 	8) sys__getcwd
  */
 #include <types.h>
 #include <kern/errno.h>
